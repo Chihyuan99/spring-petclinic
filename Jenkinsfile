@@ -1,6 +1,12 @@
 pipeline {
     agent any
     stages {
+        stage('Clone') {
+            steps {
+                sh 'git clone git@github.com:spring-projects/spring-petclinic.git'
+                sh 'cd spring-petclinic && git checkout main'
+            }
+        }
         stage('Build') {
             steps {
                 sh 'mvn clean install'
