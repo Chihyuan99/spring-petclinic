@@ -5,7 +5,7 @@ node {
   stage('SonarQube Analysis') {
     def mvn = tool 'Default Maven';
     withSonarQubeEnv() {
-      sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=Petclinic -Dsonar.projectName='Petclinic'"
+      sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=petclinic-sonarqube -Dsonar.projectName='petclinic-sonarqube'"
     }
   }
   stage('Build JAR') {
