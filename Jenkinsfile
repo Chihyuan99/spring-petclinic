@@ -3,33 +3,36 @@ pipeline {
   stages {
     stage('Clone') {
       steps {
-        checkout scm
+        sshagent(['ssh_rsa']) {
+          git credentialsId: 'ssh_rsa', branch: 'main', url: 'git@github.com:spring-projects/spring-petclinic.git'
+        }
       }
     }
     stage('Build') {
         steps {
-            def mvn = tool 'Default Maven';
-            sh "${mvn}/bin/mvn clean install"
+            sh 'mvn clean install'
         }
     }
     stage('SonarQube analysis') {
       steps {
-        def mvn = tool 'Default Maven';
-        withSonarQubeEnv() {
-          sh "${mvn}/bin/mvn clean verify sonar:sonar \
-              -Dsonar.projectKey=petclinic \
-              -Dsonar.host.url=http://3.16.49.56:9000 \
-              -Dsonar.login=sqp_bee15a8a76900d3bbfaf1e698b5c0867bc5a5803"
+        withSonarQubeEnv('SonarQube') {
+          script {
+            def mvnHome = tool 'Default Maven'
+            sh "${mvnHome}/bin/mvn clean verify sonar:sonar \
+                -Dsonar.projectKey=petclinic-sonarqube \
+                -Dsonar.host.url=http://54.159.13.113/:9000 \
+                -Dsonar.login=sqa_2145f8990d1f08f072bec12bf068b21a5296f56c"
+          }
         }
       }
     }
     stage('Build petclinic.jar') {
       steps {
-        def mvn = tool 'Default Maven';
-        sh "${mvn}/bin/mvn package"
-        sh "cp target/*.jar petclinic.jar"
+        script {
+          def mvnHome = tool 'Default Maven'
+          sh "${mvnHome}/bin/mvn package"
+        }
       }
     }
   }
 }
-
