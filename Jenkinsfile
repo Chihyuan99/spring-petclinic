@@ -13,4 +13,7 @@ node {
     sh "${mvn}/bin/mvn package"
     sh "cp target/*.jar petclinic.jar"
   }
+  stage('Run JAR') {
+    sh "java -jar petclinic.jar"
+  }
 }
