@@ -4,7 +4,7 @@ pipeline {
     stage('Clone') {
       steps {
         sshagent(['ssh_rsa']) {
-          git credentialsId: 'ssh_rsa', branch: 'main', url: 'git@github.com:spring-projects/spring-petclinic.git'
+          git credentialsId: 'ssh_rsa', branch: 'main', url: 'git@github.com:Chihyuan99/spring-petclinic.git'
         }
       }
     }
