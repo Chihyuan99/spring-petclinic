@@ -8,4 +8,9 @@ node {
       sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=Petclinic -Dsonar.projectName='Petclinic'"
     }
   }
+  stage('Build JAR') {
+    def mvn = tool 'Default Maven';
+    sh "${mvn}/bin/mvn package"
+    sh "cp target/*.jar petclinic.jar"
+  }
 }
