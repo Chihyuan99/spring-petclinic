@@ -1,30 +1,13 @@
 pipeline {
     agent any
     stages {
-        stage('Clone') {
-            steps {
-                sh 'git clone git@github.com:spring-projects/spring-petclinic.git'
-                sh 'cd spring-petclinic && git checkout main'
-            }
+        stage('SCM') {
+            checkout scm
         }
-        stage('Build') {
-            steps {
-                sh 'mvn clean install'
-            }
-        }
-        stage('Build petclinic.jar') {
-            steps {
-                sh 'mvn package'
-            }
-        }
-        stage('SonarQube analysis') {
-            steps {
-                withSonarQubeEnv('My SonarQube Server') {
-                    sh 'mvn sonar:sonar \
-                        -Dsonar.projectKey=petclinic \
-                        -Dsonar.host.url=http://18.212.76.116/:9000 \
-                        -Dsonar.login=sqa_85926f9b090665e790263e1bcc3e9bacca5dce2e'
-                }
+        stage('SonarQube Analysis') {
+            def mvn = tool 'Default Maven';
+            withSonarQubeEnv() {
+              sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=Petclinic -Dsonar.projectName='Petclinic'"
             }
         }
     }
